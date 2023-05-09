@@ -1,6 +1,11 @@
 <?php
 
+use App\Models\Site;
+use App\Models\Internal;
+
 return [
+
+    'asset_version' => '7',
 
     /*
     |--------------------------------------------------------------------------
@@ -14,8 +19,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'site',
+        'passwords' => 'pws_site_users',
     ],
 
     /*
@@ -36,9 +41,13 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        'site' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'provider_site_users',
+        ],
+        'internal' => [
+            'driver' => 'session',
+            'provider' => 'provider_internal_users',
         ],
     ],
 
@@ -60,15 +69,14 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'provider_site_users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => Site\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'provider_internal_users' => [
+            'driver' => 'eloquent',
+            'model' => Internal\User::class,
+        ],
     ],
 
     /*
@@ -91,8 +99,14 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'psw_site_users' => [
+            'provider' => 'provider_site_users',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'psw_internal_users' => [
+            'provider' => 'provider_internal_users',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
