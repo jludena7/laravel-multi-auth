@@ -1,6 +1,6 @@
 @extends('internal.template.security')
 
-@section('title', 'Recovery Password')
+@section('title', __('app.title_recovery_password'))
 
 @section('content')
     <div class="row justify-content-center">
@@ -11,14 +11,14 @@
                         <div class="col-lg-12">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Recovery Password</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">{{ __('app.title_recovery_password') }}</h1>
                                 </div>
                                 @include('internal.template.partials.errors')
                                 @include('internal.template.partials.success')
                                 <form class="user" method="post" action="{{ route('internal.security.auth.forgot-password.store') }}">
                                     @csrf
                                     <div class="form-group">
-                                        <input name="email" type="email" placeholder="Email Address" class="form-control form-control-user @error('email') is-invalid @enderror" required value="{{ old('email') }}">
+                                        <input name="email" type="email" placeholder="Email Address" required autocomplete="off" class="form-control form-control-user @error('email') is-invalid @enderror" value="{{ old('email') }}">
                                         @error('email')
                                             <div class="invalid-feedback">
                                                 {{ $message }}

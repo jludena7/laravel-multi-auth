@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site\Account\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Site\Account\RegisterUserRequest;
 use App\Models\Site\User;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -53,6 +54,6 @@ class RegisterUserController extends Controller
         Auth::guard('site')->login($user);
 
         return redirect()
-            ->route('site.account.inbox.main');
+            ->route(RouteServiceProvider::ROUTE_SITE_INBOX);
     }
 }

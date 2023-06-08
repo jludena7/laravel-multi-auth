@@ -21,7 +21,12 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                $url = match ($request->route()->getPrefix()) {
+                    '/internal' => route(RouteServiceProvider::ROUTE_INTERNAL_DASHBOARD),
+                    default => route(RouteServiceProvider::ROUTE_SITE_INBOX),
+                };
+
+                return redirect($url);
             }
         }
 

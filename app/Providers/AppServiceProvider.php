@@ -41,8 +41,8 @@ class AppServiceProvider extends ServiceProvider
 
         VerifyEmail::createUrlUsing(function ($notifiable) {
             $routeName = match (request()->route()->getPrefix()) {
-                '/internal' => 'internal.security.auth.verification.verify',
-                default => 'site.account.auth.verification.verify',
+                '/internal' => 'internal.security.auth.message-verification-email',
+                default => 'site.account.auth.message-verification-email',
             };
 
             return URL::temporarySignedRoute(

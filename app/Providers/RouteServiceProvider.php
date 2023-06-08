@@ -17,7 +17,9 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const ROUTE_SITE_INBOX = 'site.account.inbox.main';
+
+    public const ROUTE_INTERNAL_DASHBOARD = 'internal.security.dashboard.main';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.

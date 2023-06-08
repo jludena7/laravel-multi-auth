@@ -1,6 +1,6 @@
 @extends('site.template.layout')
 
-@section('title', 'Register User')
+@section('title', __('app.title_register_user'))
 
 @section('content')
     <div class="row justify-content-center">
@@ -11,7 +11,7 @@
                         <div class="col-lg-12">
                             <div class="p-4">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Register User</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">{{ __('app.title_register_user') }}</h1>
                                 </div>
                                 @include('site.template.partials.errors')
                                 @include('site.template.partials.success')
@@ -61,7 +61,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary btn-user btn-block">Create</button>
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">{{ __('app.btn_create') }}</button>
                                 </form>
                                 <hr>
                                 <div class="text-center">

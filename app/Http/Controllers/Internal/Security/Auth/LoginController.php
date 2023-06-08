@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Internal\Security\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Internal\Security\LoginRequest;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -33,8 +34,15 @@ class LoginController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
+        if (!Auth::guard('internal')->user()->status) {
+            $this->invalidate($request);
+            throw ValidationException::withMessages([
+                __('auth.disabled_account'),
+            ]);
+        }
+
         return redirect()
-            ->intended(route('internal.security.dashboard.main'));
+            ->intended(route(RouteServiceProvider::ROUTE_INTERNAL_DASHBOARD));
     }
 
     /**
@@ -43,11 +51,16 @@ class LoginController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('internal')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $this->invalidate($request);
 
         return redirect()
             ->route('internal.security.auth.login.create');
+    }
+
+    private function invalidate(Request $request)
+    {
+        Auth::guard('internal')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
     }
 }

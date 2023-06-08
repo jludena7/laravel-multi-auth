@@ -4,10 +4,13 @@ use App\Http\Controllers\Internal\Security\Auth\ForgotPasswordController as IntF
 use App\Http\Controllers\Internal\Security\Auth\LoginController as IntLoginController;
 use App\Http\Controllers\Internal\Security\Auth\ResetPasswordController as IntResetPasswordController;
 use App\Http\Controllers\Internal\Security\DashboardController;
-use App\Http\Controllers\Site\Account\Auth\ForgotPasswordController as WbForgotPasswordController;
-use App\Http\Controllers\Site\Account\Auth\LoginController as WbLoginController;
-use App\Http\Controllers\Site\Account\Auth\RegisterUserController as WbRegisterUserController;
-use App\Http\Controllers\Site\Account\Auth\ResetPasswordController as WbResetPasswordController;
+use App\Http\Controllers\Site\Account\Auth\ForgotPasswordController as StForgotPasswordController;
+use App\Http\Controllers\Site\Account\Auth\LoginController as StLoginController;
+use App\Http\Controllers\Site\Account\Auth\RegisterUserController as StRegisterUserController;
+use App\Http\Controllers\Site\Account\Auth\ResetPasswordController as StResetPasswordController;
+use App\Http\Controllers\Site\Account\Auth\SendVerificationEmailController as StSendVerificationEmailController;
+use App\Http\Controllers\Site\Account\Auth\MessageVerificationEmailController as StMessageVerificationEmailController;
+use App\Http\Controllers\Site\Account\Auth\PromptVerificationEmailController as StPromptVerificationEmailController;
 use App\Http\Controllers\Site\Account\InboxController;
 use App\Http\Controllers\Site\Content\PageController;
 use Illuminate\Support\Facades\Route;
@@ -26,20 +29,24 @@ use Illuminate\Support\Facades\Route;
 
 Route::name('site.')->group(function () {
     Route::get('/', [PageController::class, 'home'])->name('content.page.home');
-    Route::get('/account', [WbLoginController::class, 'create'])->name('account.auth.login.create');
-    Route::get('/account/auth/login', [WbLoginController::class, 'create'])->name('account.auth.login.create');
-    Route::post('/account/auth/login', [WbLoginController::class, 'store'])->name('account.auth.login.store')->middleware(['middleware' => 'throttle:3,1']);
-    Route::delete('/account/auth/login', [WbLoginController::class, 'destroy'])->name('account.auth.login.destroy');
-    Route::get('/account/auth/forgot-password', [WbForgotPasswordController::class, 'create'])->name('account.auth.forgot-password.create');
-    Route::post('/account/auth/forgot-password', [WbForgotPasswordController::class, 'store'])->name('account.auth.forgot-password.store')->middleware(['middleware' => 'throttle:3,1']);
-    Route::get('/account/auth/reset-password/{token}', [WbResetPasswordController::class, 'create'])->name('account.auth.reset-password.create');
-    Route::post('/account/auth/reset-password', [WbResetPasswordController::class, 'store'])->name('account.auth.reset-password.store')->middleware(['middleware' => 'throttle:3,1']);
-    Route::get('/account/auth/register-user', [WbRegisterUserController::class, 'create'])->name('account.auth.register-user.create');
-    Route::post('/account/auth/register-user', [WbRegisterUserController::class, 'store'])->name('account.auth.register-user.store');
-    Route::get('/account/auth/verification/verify', [WbRegisterUserController::class, 'verify'])->name('account.auth.verification.verify');
+    Route::get('/account', [StLoginController::class, 'create'])->name('account.auth.login.create');
+    Route::get('/account/auth/login', [StLoginController::class, 'create'])->name('account.auth.login.create');
+    Route::post('/account/auth/login', [StLoginController::class, 'store'])->name('account.auth.login.store')->middleware(['middleware' => 'throttle:3,1']);
+    Route::delete('/account/auth/login', [StLoginController::class, 'destroy'])->name('account.auth.login.destroy');
+    Route::get('/account/auth/forgot-password', [StForgotPasswordController::class, 'create'])->name('account.auth.forgot-password.create');
+    Route::post('/account/auth/forgot-password', [StForgotPasswordController::class, 'store'])->name('account.auth.forgot-password.store')->middleware(['middleware' => 'throttle:3,1']);
+    Route::get('/account/auth/reset-password/{token}', [StResetPasswordController::class, 'create'])->name('account.auth.reset-password.create');
+    Route::post('/account/auth/reset-password', [StResetPasswordController::class, 'store'])->name('account.auth.reset-password.store')->middleware(['middleware' => 'throttle:3,1']);
+    Route::get('/account/auth/register-user', [StRegisterUserController::class, 'create'])->name('account.auth.register-user.create');
+    Route::post('/account/auth/register-user', [StRegisterUserController::class, 'store'])->name('account.auth.register-user.store');
 });
 
 Route::middleware(['auth:site'])->name('site.')->group(function () {
+    Route::get('/account/auth/verification-email', StPromptVerificationEmailController::class)->name('account.auth.prompt-verification-email');
+    Route::get('/account/auth/verification-email/{id}/{hash}', StMessageVerificationEmailController::class)->middleware(['signed', 'throttle:6,1'])->name('account.auth.message-verification-email');
+    Route::post('/account/auth/send-verification-email', [StSendVerificationEmailController::class, 'store'])->middleware(['throttle:6,1'])->name('account.auth.send-verification-email.store');
+});
+Route::middleware(['auth:site', 'verified:site.account.auth.prompt-verification-email'])->name('site.')->group(function () {
     Route::get('/account/inbox/main', [InboxController::class, 'main'])->name('account.inbox.main');
 });
 

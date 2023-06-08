@@ -1,6 +1,6 @@
 @extends('internal.template.security')
 
-@section('title', 'Internal Login')
+@section('title', __('app.title_internal_login'))
 
 @section('content')
     <div class="row justify-content-center">
@@ -11,14 +11,14 @@
                         <div class="col-lg-12">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Internal Login</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">{{ __('app.title_internal_login') }}</h1>
                                 </div>
                                 @include('internal.template.partials.errors')
                                 @include('internal.template.partials.success')
                                 <form class="user" method="post" action="{{ route('internal.security.auth.login.store') }}">
                                     @csrf
                                     <div class="form-group">
-                                        <input name="email" type="email" placeholder="Email Address" class="form-control form-control-user @error('email') is-invalid @enderror" required value="{{ old('email') }}">
+                                        <input name="email" type="email" placeholder="Email Address" required autocomplete="off" class="form-control form-control-user @error('email') is-invalid @enderror" value="{{ old('email') }}">
                                         @error('email')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -26,7 +26,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <input name="password" type="password" placeholder="Password" required class="form-control form-control-user @error('password') is-invalid @enderror">
+                                        <input name="password" type="password" placeholder="Password" required autocomplete="off" class="form-control form-control-user @error('password') is-invalid @enderror">
                                         @error('password')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -37,7 +37,7 @@
                                 </form>
                                 <hr>
                                 <div class="text-center">
-                                    <a class="small" href="{{ route('internal.security.auth.forgot-password.create') }}">Forgot Password?</a>
+                                    <a class="small" href="{{ route('internal.security.auth.forgot-password.create') }}">{{ __('app.btn_forgot_password') }}</a>
                                 </div>
                             </div>
                         </div>
